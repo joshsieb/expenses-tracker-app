@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expenses Tracker</title>
+    <!-- INJECT_CONFIG -->
+    <style>
+      body {
+        font-family: sans-serif;
+        font-size: 14px;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 24px 16px;
+        color: #222;
+        background: #fff;
+      }
+
+      h1 {
+        font-size: 20px;
+        margin-bottom: 4px;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 24px 0 8px;
+      }
+
+      input,
+      select,
+      button {
+        font-family: sans-serif;
+        font-size: 14px;
+      }
+
+      input[type='text'],
+      input[type='email'],
+      input[type='password'],
+      input[type='number'],
+      input[type='date'],
+      select {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 6px 8px;
+        outline: none;
+      }
+      input:focus,
+      select:focus {
+        border-color: #666;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 6px 12px;
+        background: #f5f5f5;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #e8e8e8;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      button.primary {
+        background: #2563eb;
+        color: #fff;
+        border-color: #2563eb;
+      }
+      button.primary:hover {
+        background: #1d4ed8;
+      }
+      button.danger {
+        color: #dc2626;
+      }
+
+      .msg {
+        padding: 8px 10px;
+        border-radius: 4px;
+        margin-bottom: 12px;
+        font-size: 13px;
+      }
+      .msg.error {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+      .msg.success {
+        background: #dcfce7;
+        color: #15803d;
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid #e5e5e5;
+        margin: 20px 0;
+      }
+
+      /* Auth */
+      #auth-screen {
+        max-width: 360px;
+        margin: 60px auto;
+      }
+      #auth-screen h1 {
+        margin-bottom: 20px;
+      }
+      .field {
+        margin-bottom: 10px;
+      }
+      .field label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 500;
+      }
+      .field input {
+        width: 100%;
+      }
+      .auth-links {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #555;
+      }
+      .auth-links button {
+        background: none;
+        border: none;
+        padding: 0;
+        color: #2563eb;
+        cursor: pointer;
+        font-size: 13px;
+      }
+
+      /* App */
+      #app-screen {
+        display: none;
+      }
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+
+      /* Stats */
+      .stats {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 16px;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: #666;
+      }
+      .stat-val {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      /* Add form */
+      .add-form {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+      }
+      .add-form .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .add-form label {
+        font-size: 12px;
+        color: #555;
+      }
+      .add-form input[type='text'] {
+        width: 180px;
+      }
+      .add-form input[type='number'] {
+        width: 90px;
+      }
+      .add-form input[type='date'] {
+        width: 130px;
+      }
+      .add-form select {
+        width: 150px;
+      }
+
+      /* Filters */
+      .filters {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .filters input[type='text'] {
+        width: 160px;
+      }
+
+      /* Table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        text-align: left;
+        font-size: 12px;
+        color: #666;
+        font-weight: 500;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 6px 8px;
+      }
+      td {
+        padding: 7px 8px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .edit-inputs {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .edit-inputs input,
+      .edit-inputs select {
+        padding: 4px 6px;
+        font-size: 13px;
+      }
+      .edit-inputs input[type='text'] {
+        width: 150px;
+      }
+      .edit-inputs input[type='number'] {
+        width: 80px;
+      }
+      .edit-inputs input[type='date'] {
+        width: 120px;
+      }
+      .edit-inputs select {
+        width: 130px;
+      }
+
+      .row-actions {
+        display: flex;
+        gap: 4px;
+        white-space: nowrap;
+      }
+      .row-actions button {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      #empty-msg {
+        color: #999;
+        padding: 16px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- AUTH -->
+    <div id="auth-screen">
+      <h1>Expenses Tracker</h1>
+      <div id="auth-msg" style="display: none" class="msg"></div>
+
+      <div id="field-name" class="field" style="display: none">
+        <label>Full Name</label>
+        <input id="inp-name" type="text" placeholder="Jane Smith" />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input id="inp-email" type="email" placeholder="you@example.com" />
+      </div>
+      <div id="field-password" class="field">
+        <label>Password</label>
+        <input id="inp-password" type="password" placeholder="••••••••" />
+      </div>
+      <div id="field-code" class="field" style="display: none">
+        <label>Verification Code</label>
+        <input id="inp-code" type="text" placeholder="123456" />
+      </div>
+      <div id="field-newpw" class="field" style="display: none">
+        <label>New Password</label>
+        <input id="inp-newpw" type="password" placeholder="••••••••" />
+      </div>
+
+      <button
+        class="primary"
+        id="auth-btn"
+        onclick="authAction()"
+        style="width: 100%; margin-top: 4px"
+      >
+        Sign In
+      </button>
+
+      <div class="auth-links">
+        <span id="link-signup-row"
+          >No account?
+          <button onclick="setMode('signup')">Sign up</button></span
+        ><br />
+        <span id="link-forgot-row"
+          >Forgot password?
+          <button onclick="setMode('forgot')">Reset it</button></span
+        >
+        <span id="link-back-row" style="display: none"
+          ><button onclick="setMode('signin')">← Back to sign in</button></span
+        >
+      </div>
+    </div>
+
+    <!-- APP -->
+    <div id="app-screen">
+      <div class="topbar">
+        <h1>Expenses Tracker</h1>
+        <div>
+          <span
+            id="user-name-display"
+            style="color: #666; margin-right: 10px"
+          ></span>
+          <button onclick="signOut()">Sign out</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">All time</div>
+          <div class="stat-val" id="stat-total">$0.00</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label" id="stat-month-label">This month</div>
+          <div class="stat-val" id="stat-month">$0.00</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Transactions</div>
+          <div class="stat-val" id="stat-count">0</div>
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>Add Expense</h2>
+      <div class="add-form">
+        <div class="form-field">
+          <label>Description</label>
+          <input id="f-desc" type="text" placeholder="e.g. Grocery run" />
+        </div>
+        <div class="form-field">
+          <label>Amount ($)</label>
+          <input
+            id="f-amount"
+            type="number"
+            placeholder="0.00"
+            min="0"
+            step="0.01"
+          />
+        </div>
+        <div class="form-field">
+          <label>Category</label>
+          <select id="f-cat"></select>
+        </div>
+        <div class="form-field">
+          <label>Date</label>
+          <input id="f-date" type="date" />
+        </div>
+        <button class="primary" id="add-btn" onclick="addExpense()">Add</button>
+      </div>
+
+      <hr />
+
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="expense-tbody"></tbody>
+      </table>
+      <div id="empty-msg" style="display: none">No expenses yet.</div>
+    </div>
+
+    <script>
+      const CFG = window.APP_CONFIG || {
+        region: 'us-east-2',
+        userPoolId: 'REPLACE_ME',
+        clientId: 'REPLACE_ME',
+        apiUrl: 'REPLACE_ME',
+      }
+
+      const CATS = [
+        { id: 'food', label: 'Food & Dining' },
+        { id: 'transport', label: 'Transport' },
+        { id: 'shopping', label: 'Shopping' },
+        { id: 'health', label: 'Health' },
+        { id: 'entertainment', label: 'Entertainment' },
+        { id: 'utilities', label: 'Utilities' },
+        { id: 'housing', label: 'Housing' },
+        { id: 'other', label: 'Other' },
+      ]
+      const catLabel = (id) => (CATS.find((c) => c.id === id) || CATS[7]).label
+
+      let idToken = null,
+        userName = null,
+        expenses = [],
+        authMode = 'signin',
+        pendingEmail = ''
+
+      // ── COGNITO ──────────────────────────────────────────────────
+      async function cognitoReq(action, body) {
+        const r = await fetch(
+          `https://cognito-idp.${CFG.region}.amazonaws.com/`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-amz-json-1.1',
+              'X-Amz-Target': `AWSCognitoIdentityProviderService.${action}`,
+            },
+            body: JSON.stringify(body),
+          },
+        )
+        const d = await r.json()
+        if (!r.ok) throw new Error(d.message || d.__type || 'Cognito error')
+        return d
+      }
+
+      function parseJwt(t) {
+        try {
+          return JSON.parse(atob(t.split('.')[1]))
+        } catch {
+          return {}
+        }
+      }
+
+      // ── AUTH ─────────────────────────────────────────────────────
+      function setMode(mode) {
+        authMode = mode
+        clearMsg()
+        const show = (id, v) =>
+          (document.getElementById(id).style.display = v ? '' : 'none')
+        show('field-name', mode === 'signup')
+        show('field-password', mode === 'signin' || mode === 'signup')
+        show('field-code', mode === 'confirm' || mode === 'reset')
+        show('field-newpw', mode === 'reset')
+        show('link-signup-row', mode === 'signin')
+        show('link-forgot-row', mode === 'signin')
+        show('link-back-row', mode !== 'signin')
+        const labels = {
+          signin: 'Sign In',
+          signup: 'Create Account',
+          confirm: 'Verify Email',
+          forgot: 'Send Reset Code',
+          reset: 'Reset Password',
+        }
+        document.getElementById('auth-btn').textContent = labels[mode]
+      }
+
+      async function authAction() {
+        const email = document.getElementById('inp-email').value.trim()
+        const pass = document.getElementById('inp-password').value
+        const name = document.getElementById('inp-name').value.trim()
+        const code = document.getElementById('inp-code').value.trim()
+        const newpw = document.getElementById('inp-newpw').value
+        const btn = document.getElementById('auth-btn')
+        btn.disabled = true
+        clearMsg()
+
+        try {
+          if (authMode === 'signin') {
+            const d = await cognitoReq('InitiateAuth', {
+              AuthFlow: 'USER_PASSWORD_AUTH',
+              ClientId: CFG.clientId,
+              AuthParameters: { USERNAME: email, PASSWORD: pass },
+            })
+            const claims = parseJwt(d.AuthenticationResult.IdToken)
+            idToken = d.AuthenticationResult.IdToken
+            userName = claims.name || email
+            showApp()
+          } else if (authMode === 'signup') {
+            await cognitoReq('SignUp', {
+              ClientId: CFG.clientId,
+              Username: email,
+              Password: pass,
+              UserAttributes: [
+                { Name: 'email', Value: email },
+                { Name: 'name', Value: name },
+              ],
+            })
+            pendingEmail = email
+            showMsg(
+              'success',
+              'Account created. Check your email for a verification code.',
+            )
+            setMode('confirm')
+          } else if (authMode === 'confirm') {
+            await cognitoReq('ConfirmSignUp', {
+              ClientId: CFG.clientId,
+              Username: pendingEmail || email,
+              ConfirmationCode: code,
+            })
+            showMsg('success', 'Email verified. You can now sign in.')
+            setMode('signin')
+          } else if (authMode === 'forgot') {
+            await cognitoReq('ForgotPassword', {
+              ClientId: CFG.clientId,
+              Username: email,
+            })
+            pendingEmail = email
+            showMsg('success', 'Reset code sent to your email.')
+            setMode('reset')
+          } else if (authMode === 'reset') {
+            await cognitoReq('ConfirmForgotPassword', {
+              ClientId: CFG.clientId,
+              Username: pendingEmail || email,
+              ConfirmationCode: code,
+              Password: newpw,
+            })
+            showMsg('success', 'Password reset. You can now sign in.')
+            setMode('signin')
+          }
+        } catch (e) {
+          showMsg('error', e.message)
+        } finally {
+          btn.disabled = false
+        }
+      }
+
+      function showMsg(type, text) {
+        const el = document.getElementById('auth-msg')
+        el.className = 'msg ' + type
+        el.textContent = text
+        el.style.display = ''
+      }
+      function clearMsg() {
+        document.getElementById('auth-msg').style.display = 'none'
+      }
+
+      // ── APP ──────────────────────────────────────────────────────
+      async function showApp() {
+        console.log('showApp called')
+        document.getElementById('auth-screen').style.display = 'none'
+        document.getElementById('app-screen').style.display = 'block'
+        document.getElementById('user-name-display').textContent = userName
+        console.log(
+          'app-screen display:',
+          document.getElementById('app-screen').style.display,
+        )
+
+        const catOpts = CATS.map(
+          (c) => `<option value="${c.id}">${c.label}</option>`,
+        ).join('')
+        document.getElementById('f-cat').innerHTML = catOpts
+        document.getElementById('f-date').value = new Date()
+          .toISOString()
+          .split('T')[0]
+        document.getElementById('f-desc').addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') addExpense()
+        })
+
+        const now = new Date()
+        document.getElementById('stat-month-label').textContent =
+          now.toLocaleString('default', { month: 'long', year: 'numeric' })
+
+        await loadExpenses()
+      }
+
+      function signOut() {
+        idToken = null
+        expenses = []
+        document.getElementById('app-screen').style.display = 'none'
+        document.getElementById('auth-screen').style.display = ''
+        setMode('signin')
+      }
+
+      // ── API ──────────────────────────────────────────────────────
+      async function api(method, path, body) {
+        const r = await fetch(CFG.apiUrl + path, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          ...(body ? { body: JSON.stringify(body) } : {}),
+        })
+        const d = await r.json()
+        if (!r.ok) throw new Error(d.error || 'API error')
+        return d
+      }
+
+      async function loadExpenses() {
+        document.getElementById('expense-tbody').innerHTML =
+          "<tr><td colspan='5'>Loading…</td></tr>"
+        try {
+          const d = await api('GET', '/expenses')
+          expenses = d.expenses || []
+          updateStats()
+          renderList()
+        } catch (e) {
+          document.getElementById('expense-tbody').innerHTML =
+            `<tr><td colspan='5'>Error: ${e.message}</td></tr>`
+        }
+      }
+
+      async function addExpense() {
+        const desc = document.getElementById('f-desc').value.trim()
+        const amount = parseFloat(document.getElementById('f-amount').value)
+        const cat = document.getElementById('f-cat').value
+        const date = document.getElementById('f-date').value
+        if (!desc || isNaN(amount) || amount < 0 || !date) return
+
+        const btn = document.getElementById('add-btn')
+        btn.disabled = true
+        try {
+          const item = await api('POST', '/expenses', {
+            description: desc,
+            amount,
+            category: cat,
+            date,
+          })
+          expenses.unshift(item)
+          document.getElementById('f-desc').value = ''
+          document.getElementById('f-amount').value = ''
+          updateStats()
+          renderList()
+        } catch (e) {
+          alert('Error: ' + e.message)
+        } finally {
+          btn.disabled = false
+        }
+      }
+
+      async function saveEdit(expenseId) {
+        const row = document.querySelector(`tr[data-id="${expenseId}"]`)
+        const desc = row.querySelector('.edit-desc').value.trim()
+        const amt = parseFloat(row.querySelector('.edit-amt').value)
+        const cat = row.querySelector('.edit-cat').value
+        const dt = row.querySelector('.edit-dt').value
+        if (!desc || isNaN(amt) || amt < 0) return
+
+        try {
+          const updated = await api('PUT', `/expenses/${expenseId}`, {
+            description: desc,
+            amount: amt,
+            category: cat,
+            date: dt,
+          })
+          const idx = expenses.findIndex((e) => e.expenseId === expenseId)
+          if (idx !== -1) expenses[idx] = updated
+          updateStats()
+          renderList()
+        } catch (e) {
+          alert('Error: ' + e.message)
+        }
+      }
+
+      async function deleteExpense(expenseId) {
+        if (!confirm('Delete this expense?')) return
+        try {
+          await api('DELETE', `/expenses/${expenseId}`)
+          expenses = expenses.filter((e) => e.expenseId !== expenseId)
+          updateStats()
+          renderList()
+        } catch (e) {
+          alert('Error: ' + e.message)
+        }
+      }
+
+      // ── RENDER ───────────────────────────────────────────────────
+      function fmt(n) {
+        return (
+          '$' +
+          Number(n).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        )
+      }
+
+      function updateStats() {
+        const now = new Date()
+        const total = expenses.reduce((s, e) => s + e.amount, 0)
+        const month = expenses
+          .filter((e) => {
+            const d = new Date(e.date + 'T12:00:00')
+            return (
+              d.getMonth() === now.getMonth() &&
+              d.getFullYear() === now.getFullYear()
+            )
+          })
+          .reduce((s, e) => s + e.amount, 0)
+        document.getElementById('stat-total').textContent = fmt(total)
+        document.getElementById('stat-month').textContent = fmt(month)
+        document.getElementById('stat-count').textContent = expenses.length
+      }
+
+      function renderList() {
+        const tbody = document.getElementById('expense-tbody')
+        const emptyMsg = document.getElementById('empty-msg')
+
+        emptyMsg.style.display = expenses.length === 0 ? '' : 'none'
+
+        tbody.innerHTML = expenses
+          .map((e) => {
+            const dateStr = new Date(e.date + 'T12:00:00').toLocaleDateString(
+              'en-US',
+              { month: 'short', day: 'numeric', year: 'numeric' },
+            )
+            return `<tr data-id="${e.expenseId}">
+      <td>
+        <span class="view-desc">${escHtml(e.description)}</span>
+        <div class="edit-inputs" style="display:none">
+          <input class="edit-desc" type="text" value="${escHtml(e.description)}" />
+          <input class="edit-amt" type="number" value="${e.amount}" min="0" step="0.01" />
+          <select class="edit-cat">${CATS.map((c) => `<option value="${c.id}"${c.id === e.category ? ' selected' : ''}>${c.label}</option>`).join('')}</select>
+          <input class="edit-dt" type="date" value="${e.date}" />
+        </div>
+      </td>
+      <td class="view-cat">${catLabel(e.category)}</td>
+      <td class="view-date">${dateStr}</td>
+      <td>${fmt(e.amount)}</td>
+      <td>
+        <div class="row-actions">
+          <span class="view-actions">
+            <button onclick="startEdit('${e.expenseId}')">Edit</button>
+            <button class="danger" onclick="deleteExpense('${e.expenseId}')">Delete</button>
+          </span>
+          <span class="edit-actions" style="display:none">
+            <button onclick="saveEdit('${e.expenseId}')">Save</button>
+            <button onclick="cancelEdit('${e.expenseId}')">Cancel</button>
+          </span>
+        </div>
+      </td>
+    </tr>`
+          })
+          .join('')
+      }
+
+      function startEdit(id) {
+        const row = document.querySelector(`tr[data-id="${id}"]`)
+        row.querySelector('.view-desc').style.display = 'none'
+        row.querySelector('.edit-inputs').style.display = ''
+        row.querySelector('.view-cat').style.display = 'none'
+        row.querySelector('.view-date').style.display = 'none'
+        row.querySelector('.view-actions').style.display = 'none'
+        row.querySelector('.edit-actions').style.display = ''
+      }
+
+      function cancelEdit() {
+        renderList()
+      }
+
+      function escHtml(s) {
+        return String(s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+      }
+
+      setMode('signin')
+    </script>
+  </body>
+</html>

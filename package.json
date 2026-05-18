@@ -1,0 +1,23 @@
+{
+  "name": "expenses-tracker",
+  "version": "1.0.0",
+  "description": "Personal Expenses Tracker",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "deploy": "node scripts/frontend.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-api-gateway": "^3.1046.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.1046.0",
+    "@aws-sdk/client-dynamodb": "^3.1046.0",
+    "@aws-sdk/client-iam": "^3.1046.0",
+    "@aws-sdk/client-lambda": "^3.1046.0",
+    "@aws-sdk/client-s3": "^3.1046.0",
+    "@aws-sdk/lib-dynamodb": "^3.1048.0",
+    "archiver": "^6.0.0"
+  }
+}

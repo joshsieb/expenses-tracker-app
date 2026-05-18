@@ -1,0 +1,9 @@
+{
+  "region": "us-east-2",
+  "userPoolId": "us-east-2_vJlkONS8u",
+  "clientId": "3vtke80d8p1m6md4952j3bgho7",
+  "apiUrl": "https://z24c1f3wo9.execute-api.us-east-2.amazonaws.com/prod",
+  "bucketName": "js-expenses-tracker-bucket",
+  "siteUrl": "http://js-expenses-tracker-bucket.s3-website.us-east-2.amazonaws.com",
+  "tableName": "js-expenses-tracker-db-table"
+}
